@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Container extends Model
 {
     use HasFactory;
+
+    protected $table = 'containers'; //Especificacion tabla correspondiente al modelo
 }
