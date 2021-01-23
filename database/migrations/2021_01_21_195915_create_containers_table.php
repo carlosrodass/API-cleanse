@@ -14,9 +14,9 @@ class CreateContainersTable extends Migration
     public function up()
     {
         Schema::create('containers', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->integer('street_number');
-            $table->string('street_name');
+            $table->bigIncrements('id')->nullable(false);
+            $table->integer('street_number')->nullable(false);
+            $table->string('street_name')->nullable(false);
             $table->timestamps();
         });
     }

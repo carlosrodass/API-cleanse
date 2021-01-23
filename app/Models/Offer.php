@@ -10,4 +10,10 @@ class Offer extends Model
     use HasFactory;
 
     protected $table = 'offers'; //Especificacion tabla correspondiente al modelo
+
+    protected $fillable = [ //Estos campos solo van a ser accesibles para el admin
+        'market_name',
+        'offer_name',
+        'points',
+    ];
 }

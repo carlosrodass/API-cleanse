@@ -14,12 +14,12 @@ class CreateOfferUsersTable extends Migration
     public function up()
     {
         Schema::create('offer__users', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->nullable(false);
             $table->unsignedBigInteger('offer_id');
             $table->foreign('offer_id')->references('id')->on('offers');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->integer('points');
+            $table->integer('points')->nullable(false);
             $table->timestamps();
         });
     }

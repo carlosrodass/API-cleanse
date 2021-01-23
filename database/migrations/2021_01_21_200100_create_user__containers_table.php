@@ -14,13 +14,13 @@ class CreateUserContainersTable extends Migration
     public function up()
     {
         Schema::create('user__containers', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id')->nullable(false);
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('container_id');
             $table->foreign('container_id')->references('id')->on('containers');
-            $table->integer('points');
-            $table->integer('trash_kilograms');
+            $table->integer('points')->nullable(false);
+            $table->integer('trash_kilograms')->nullable(false);
             $table->timestamps();
         });
     }
