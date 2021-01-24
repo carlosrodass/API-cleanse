@@ -15,4 +15,10 @@ class Container extends Model
         'street_number',
         'street_name',
     ];
+
+
+    //Relations
+    public function users(){
+        return $this->belongsToMany(User::class);
+    }
 }

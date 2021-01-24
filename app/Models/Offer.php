@@ -16,4 +16,10 @@ class Offer extends Model
         'offer_name',
         'points',
     ];
+    
+
+    //Relations
+    public function users(){
+        return $this->belongsToMany(User::class);
+    }
 }
