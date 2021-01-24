@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->bigIncrements('id')->nullable(false);
             $table->string('username')->unique()->nullable(false);
             $table->string('email')->unique()->nullable(false);
+            $table->string('image');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->bigInteger('points');
