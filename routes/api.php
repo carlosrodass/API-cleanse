@@ -23,13 +23,22 @@ use Illuminate\Support\Facades\Route;
 // Route::get('/users/{username}/', 'App\Http\Controllers\UserController@find');
 
 //Rutas usuario
-Route::get('/user/{username}/', 'App\Http\Controllers\UserController@findUser');
+// Route::get('/user/{username}/', 'App\Http\Controllers\UserController@findUser');
+// //Rutas contenedores
+// Route::get('/container', 'App\Http\Controllers\ContainerController@index');
 
-
-//Rutas contenedores
-Route::get('/container', 'App\Http\Controllers\ContainerController@index');
 Route::get('/container/{street_name}/', 'App\Http\Controllers\ContainerController@findContainerByName');
 
+// //Rutas Ofertas
+// 
 
-//Rutas Ofertas
-Route::get('/offer', 'App\Http\Controllers\OfferController@index');
+Route::post('register', 'App\Http\Controllers\UserController@register');
+Route::post('login', 'App\Http\Controllers\UserController@authenticate');
+
+Route::group(['middleware' => ['jwt.verify']], function() {
+
+    Route::post('user','App\Http\Controllers\UserController@getAuthenticatedUser');
+    Route::get('offer', 'App\Http\Controllers\OfferController@index');
+
+
+});

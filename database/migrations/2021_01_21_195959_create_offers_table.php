@@ -13,6 +13,7 @@ class CreateOffersTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('offers');
         Schema::create('offers', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('market_name')->nullable(false);

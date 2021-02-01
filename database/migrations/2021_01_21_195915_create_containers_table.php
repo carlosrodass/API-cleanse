@@ -13,6 +13,7 @@ class CreateContainersTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('containers');
         Schema::create('containers', function (Blueprint $table) {
             $table->bigIncrements('id')->nullable(false);
             $table->integer('street_number')->nullable(false);
