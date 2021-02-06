@@ -14,19 +14,11 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserController extends Controller
 {
-    // //Método mostrando usuario por su nombre de usuario y devolviendo nombreusuario, email y puntos 
-    // public function findUser($username) 
-    // {
-    //     $var = DB::table('users')
-    //     ->where('username', '=', $username)
-    //     ->get(['username', 'email', 'points', 'image']);
-        
-    //     return $var;
 
-    // }
-
+    //Loguin de usuario
     public function authenticate(Request $request)
     {
+    //Credenciales que debe introducir el usuario para loguin
     $credentials = $request->only('email', 'password');
     try {
         if (!$token = JWTAuth::attempt($credentials)) {
@@ -35,12 +27,12 @@ class UserController extends Controller
     } catch (JWTException $e) {
         return response()->json(['error' => 'could_not_create_token'], 500);
     }
+    //Respuesta (token) si el acceso ha sido success
     return response()->json(compact('token'));
     }
 
 
-    // ***************************************************
-
+    //Perfil de usuario
     public function getAuthenticatedUser()
     {
 
@@ -55,11 +47,12 @@ class UserController extends Controller
         } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
                 return response()->json(['token_absent'], $e->getStatusCode());
         }
+        //Devolviendo informacion del usuario
         return response()->json(compact('user'));
     }
 
-	// ***************************************************
 
+    //Registro de usuario
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -85,3 +78,15 @@ class UserController extends Controller
         return response()->json(compact('user','token'),201);
     }
 }
+
+
+   // //Método mostrando usuario por su nombre de usuario y devolviendo nombreusuario, email y puntos 
+    // public function findUser($username) 
+    // {
+    //     $var = DB::table('users')
+    //     ->where('username', '=', $username)
+    //     ->get(['username', 'email', 'points', 'image']);
+        
+    //     return $var;
+
+    // }

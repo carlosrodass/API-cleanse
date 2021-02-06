@@ -29,9 +29,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/container/{street_name}/', 'App\Http\Controllers\ContainerController@findContainerByName');
 
-// //Rutas Ofertas
-// 
-
 Route::post('register', 'App\Http\Controllers\UserController@register');
 Route::post('login', 'App\Http\Controllers\UserController@authenticate');
 
