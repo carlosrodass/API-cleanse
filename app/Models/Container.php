@@ -14,6 +14,7 @@ class Container extends Model
     protected $fillable = [ //Estos campos solo van a ser accesibles para el admin
         'street_number',
         'street_name',
+        'amount',
     ];
 
 

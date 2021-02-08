@@ -17,5 +17,32 @@ class ContainerController extends Controller
         return $var;
     }
 
+    public function amounttrash(Request $request)
+    {
+    	$response = "";
+
+    	$quantity = $request->only('amount');
+
+    	if(isset($quantity)){
+    		//segun la cantidad introducida devuelve un numero de puntos
+
+    		// if($quantity >= 0 && $quantity <= 5)
+    		// {
+    		// 	$response = "toma 5 puntos";
+    		// }
+    		// else if($quantity >= 6 && $quantity <=10)
+    		// {
+    		// 	$response = "toma 10 puntos";
+    		// }
+    		$response = "toma 10 puntos";
+    		
+    	}else
+
+    	$response = "No has introducida basura";
+
+    	return $response;
+
+    }
+
     
 }

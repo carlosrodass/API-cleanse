@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/container/{street_name}/', 'App\Http\Controllers\ContainerController@findContainerByName');
+Route::post('containertrade', 'App\Http\Controllers\ContainerController@amounttrash');
 
 Route::post('register', 'App\Http\Controllers\UserController@register');
 Route::post('login', 'App\Http\Controllers\UserController@authenticate');
