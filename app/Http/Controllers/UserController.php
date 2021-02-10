@@ -77,6 +77,11 @@ class UserController extends Controller
 
         return response()->json(compact('user','token'),201);
     }
+
+    //Actualizar perfil de usuario
+    public function updateUserProfile(Request $request){
+        
+    }
 }
 
 

@@ -43,7 +43,7 @@ class OfferController extends Controller
         ->where('offer_name', '=', $offerRequest)
         ->get(['stock', 'market_name']);
 
-        if($offersDB){
+        if($offersDB->get('stock') >= 0){
             $response = "existe";
         }
         else{
