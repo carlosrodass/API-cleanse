@@ -21,14 +21,12 @@ class ContainerController extends Controller
     public function amounttrash(Request $request)
     {
     	$response = "";
-
     	$quantity = $request->get('amount');
 
     	if(isset($quantity)){
     		//segun la cantidad introducida devuelve un numero de puntos
 			
 			if($quantity >= 1 && $quantity <= 10){
-
 				$response = 5;
 			}
 			if($quantity >= 11 && $quantity <= 20){
@@ -40,11 +38,11 @@ class ContainerController extends Controller
 			if($quantity >= 31 && $quantity <= 40){
 				$response = 10;
 			}
-			
+
     	}else
 
     	$response = "No has introducida basura";
-
+    	
     	return $response;
 
     }

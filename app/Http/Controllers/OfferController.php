@@ -22,20 +22,55 @@ class OfferController extends Controller
 
     public function tradeOffers(Request $request)
     {   
+        /*
+        *Usuario intenta adquirir oferta
+        *Se comprueba que tenga los ptos necesarios
+
+        * 1) --->los tiene 
+                    : peticion al servidor
+        * 2) --->No los tiene
+                    : Mensaje de error
+
+        *Si los tiene se hace una peticion al servidor con el nombre de la oferta
+
+        */
         $response = "";
-        //Usuario compra oferta
-        //App envia id oferta
         //busqueda oferta
-        $offerRequest = $request->get('market_name', 'offer_name');
-        $offersDB = DB::table('offers')->get();
+        $offerRequest = $request->get('offer_name');
+        
         //Comprobacion de si existe la oferta y stock de la oferta
-        if(isset($offersDB))
-        {
-            
-            return $response = "existe";
+        $offersDB = DB::table('offers')
+        ->where('offer_name', '=', $offerRequest)
+        ->get(['stock', 'market_name']);
+
+        if($offersDB){
+            $response = "existe";
         }
-        //Comprobacion de ptos con los ptos de usuario
-        //si posee ptos necesarios restar cantidad de stock
-        //devolver numero de ptos restados al usuario ss
+        else{
+            $response = " No existe";
+        }
+
+         
+        //COMPROBACION DE STOCK
+
+        // if("stock > 0"){
+        //     //Restar el stock
+        //     //response = succesful
+        // }
+        // else{
+        //     //response = failure
+        // }
+        
+        /**
+         * la RESPONSE es enviada al cliente
+         * 
+         * --->comprobacion en la app [si la respuesta es SUCCES]
+         * Restar los ptos correspondientes al usuario y mensaje de VENDIDO
+         * 
+         * --->comprobacion en la app [si la respuesta es FAILURE]
+         * No se pudo realizar la compra
+         */
+        return $response;
+        //compact('offersDB');
     }
 }

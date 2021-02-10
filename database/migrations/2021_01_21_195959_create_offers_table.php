@@ -19,6 +19,7 @@ class CreateOffersTable extends Migration
             $table->string('market_name')->nullable(false);
             $table->string('offer_name')->nullable(false);
             $table->integer('points')->nullable(false);
+            $table->increments('stock')->nullable(false);
             $table->timestamps();
         });
     }
