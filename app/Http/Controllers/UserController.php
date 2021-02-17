@@ -33,8 +33,8 @@ class UserController extends Controller
 
 
     //Perfil de usuario
-    public function getAuthenticatedUser()
-    {
+    /*public function getAuthenticatedUser()
+    {   
 
     try {
         if (!$user = JWTAuth::parseToken()->authenticate()) {
@@ -49,6 +49,29 @@ class UserController extends Controller
         }
         //Devolviendo informacion del usuario
         return response()->json(compact('user'));
+    }*/
+    
+public function getAuthenticatedUser()
+    {   
+        $response = [];
+        
+    try {
+        if (!$user = JWTAuth::parseToken()->authenticate()) {
+                return response()->json(['user_not_found'], 404);
+        }
+        } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+                return response()->json(['token_expired'], $e->getStatusCode());
+        } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+                return response()->json(['token_invalid'], $e->getStatusCode());
+        } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
+                return response()->json(['token_absent'], $e->getStatusCode());
+        }
+
+        $response['username'] = $user->username;
+        $response['puntos'] = $user->points;
+
+        //Devolviendo informacion del usuario
+        return response()->json($response);
     }
 
 
@@ -70,7 +93,7 @@ class UserController extends Controller
             'username' => $request->get('username'),
             'email' => $request->get('email'),
             'password' => Hash::make($request->get('password')),
-            // 'points' => $request->get('points')
+            'points' => $request->get('points')
         ]);
 
         $token = JWTAuth::fromUser($user);
@@ -80,6 +103,7 @@ class UserController extends Controller
 
     //Actualizar perfil de usuario
     public function updateUserProfile(Request $request){
+
         
     }
 }
