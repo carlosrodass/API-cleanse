@@ -1,23 +1,41 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Offer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use App\Http\Helpers\MyJWT;
+use \Firebase\JWT\JWT;
+
 class OfferController extends Controller
 {
-    // public function index(){
-        
-    //     return Offer::class;
-    // }
-
-    public function index() 
+    
+    public function showOffers() 
     {
-        $var = DB::table('offers')
-        ->get();
-        
-        return $var;
+        $response = [];
+        $key = MyJWT::getKey();
+        $headers = getallheaders();
+        $decoded = JWT::decode($headers['token'], $key, array('HS256'));
 
+        if($decoded->id){
+
+            $offers = DB::table('offers')
+            ->get();
+
+            for($i =0 ; $i < count($offers) ; $i++){
+
+                $response[$i] = [
+                'market' => $offers[$i]->market_name,
+                'product' => $offers[$i]->offer_name,
+                'price' => $offers[$i]->points
+                ];
+            }
+        }else{
+            $response = response()->json(['Failure'=>'No estas logueado']);
+        }
+        return $response;
     }
 
     public function tradeOffers(Request $request)
