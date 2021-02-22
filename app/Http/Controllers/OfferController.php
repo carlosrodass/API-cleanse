@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Models\Offer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -11,8 +9,8 @@ use \Firebase\JWT\JWT;
 
 class OfferController extends Controller
 {
-    
-    public function showOffers() 
+
+    public function showOffers()
     {
         $response = [];
         $key = MyJWT::getKey();
@@ -39,12 +37,12 @@ class OfferController extends Controller
     }
 
     public function tradeOffers(Request $request)
-    {   
+    {
         /*
         *Usuario intenta adquirir oferta
         *Se comprueba que tenga los ptos necesarios
 
-        * 1) --->los tiene 
+        * 1) --->los tiene
                     : peticion al servidor
         * 2) --->No los tiene
                     : Mensaje de error
@@ -55,7 +53,7 @@ class OfferController extends Controller
         $response = "";
         //busqueda oferta
         $offerRequest = $request->get('offer_name');
-        
+
         //Comprobacion de si existe la oferta y stock de la oferta
         $offersDB = DB::table('offers')
         ->where('offer_name', '=', $offerRequest)
@@ -68,7 +66,7 @@ class OfferController extends Controller
             $response = " No existe";
         }
 
-         
+
         //COMPROBACION DE STOCK
 
         // if("stock > 0"){
@@ -78,13 +76,13 @@ class OfferController extends Controller
         // else{
         //     //response = failure
         // }
-        
+
         /**
          * la RESPONSE es enviada al cliente
-         * 
+         *
          * --->comprobacion en la app [si la respuesta es SUCCES]
          * Restar los ptos correspondientes al usuario y mensaje de VENDIDO
-         * 
+         *
          * --->comprobacion en la app [si la respuesta es FAILURE]
          * No se pudo realizar la compra
          */

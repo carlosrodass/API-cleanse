@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Container;
 use App\Http\Helpers\MyJWT;
 use \Firebase\JWT\JWT;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ContainerController extends Controller
 {
 
-    //Mostrando Contenedores segun la calle introducida y devolviendo el numero de la calle y el nombre 
-    public function findContainerByName(Request $request) 
-    {	
+    //Mostrando Contenedores segun la calle introducida y devolviendo el numero de la calle y el nombre
+    public function findContainerByName(Request $request)
+    {
 
-        $response = "";
         $data = $request->getContent();
         $data = json_decode($data);
 
@@ -54,7 +51,6 @@ class ContainerController extends Controller
 
     public function tradeTrash(Request $request)
     {
-    	$response = "";
     	$quantity = $request->getContent();
         $quantity = json_decode($quantity);
 
@@ -67,7 +63,7 @@ class ContainerController extends Controller
 
             if($quantity){
                 //segun la cantidad introducida devuelve un numero de puntos
-                
+
                 ///AQUI HAY UN ERROR/ EL PARAMETRO QUE RECIBO ES UN STRING(QUANTITY) ENTONCES NO SE PUEDE COMPARAR, ARREGLAR!
 
                 if($quantity >= 1 && $quantity <= 10){
@@ -90,13 +86,13 @@ class ContainerController extends Controller
         }else{
             $response = response()->json(['Failure'=>'No estas logueado']);
         }
-        	
+
 
     	return $response;
 
     }
 
-	
 
-    
+
+
 }

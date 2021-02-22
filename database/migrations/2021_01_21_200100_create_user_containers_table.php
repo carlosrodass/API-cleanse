@@ -14,11 +14,10 @@ class CreateUserContainersTable extends Migration
     public function up()
     {
         Schema::create('user__containers', function (Blueprint $table) {
-            $table->bigIncrements('id')->nullable(false);
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->unsignedBigInteger('container_id');
-            $table->foreign('container_id')->references('id')->on('containers');
+          
+            $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('container_id')->constrained();
             $table->integer('points')->nullable(false);
             $table->integer('trash_kilograms')->nullable(false);
             $table->timestamps();
@@ -35,3 +34,8 @@ class CreateUserContainersTable extends Migration
         Schema::dropIfExists('user__containers');
     }
 }
+  // $table->bigIncrements('id')->nullable(false);
+// $table->unsignedBigInteger('user_id');
+            // $table->foreign('user_id')->references('id')->on('users');
+            // $table->unsignedBigInteger('container_id');
+            // $table->foreign('container_id')->references('id')->on('containers');

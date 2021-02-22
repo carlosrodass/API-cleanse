@@ -14,11 +14,9 @@ class CreateOfferUsersTable extends Migration
     public function up()
     {
         Schema::create('offer__users', function (Blueprint $table) {
-            $table->bigIncrements('id')->nullable(false);
-            $table->unsignedBigInteger('offer_id');
-            $table->foreign('offer_id')->references('id')->on('offers');
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->id();
+            $table->foreignId('offer_id')->constrained();
+            $table->foreignId('user_id')->constrained();
             $table->integer('points')->nullable(false);
             $table->timestamps();
         });
@@ -34,3 +32,9 @@ class CreateOfferUsersTable extends Migration
         Schema::dropIfExists('offer__users');
     }
 }
+ // $table->bigIncrements('id')->nullable(false);
+// $table->unsignedBigInteger('offer_id');
+//             $table->foreign('offer_id')->references('id')->on('offers');
+
+ // $table->unsignedBigInteger('user_id');
+            // $table->foreign('user_id')->references('id')->on('users');

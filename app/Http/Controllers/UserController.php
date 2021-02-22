@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use App\Http\Helpers\MyJWT;
+use Exception;
 use \Firebase\JWT\JWT;
-   
+
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -18,9 +20,11 @@ class UserController extends Controller
 {
 
     /**
-    *Registro de usuario
-    */
-    public function signUp(Request $request)
+     *Registro de usuario
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function signUp(Request $request): JsonResponse
     {
         $response = "";
 
@@ -36,7 +40,7 @@ class UserController extends Controller
                 $user->save();
                 $response = response()->json(['Success' => 'Usuario registrado']);
 
-            }catch(\Exception $e){
+            }catch(Exception $e){
                 $fail=$e->getMessage();
                 $response = response()->json(['Error' => $fail]);
             }
@@ -50,8 +54,10 @@ class UserController extends Controller
     }
 
     /**
-    *Login de usuario
-    */
+     *Login de usuario
+     * @param Request $request
+     * @return JsonResponse|string
+     */
     public function SignIn(Request $request)
     {
         $response = "";
@@ -80,7 +86,7 @@ class UserController extends Controller
                         $user->save();
                         $response = response()->json(['token' => $jwt], 200);
 
-                    } catch(\Exception $e){
+                    } catch(Exception $e){
                         $response=$e->getMessage();
                     }
                 }else{
@@ -90,10 +96,7 @@ class UserController extends Controller
             //Si el usuario NO existe
             }else{
                 $response = response()->json(['error' => 'Usuario no existe']);
-
             }
-
-
         //Si NO hay datos
         }else{
             // $response = "No hay datos introducidos";
@@ -102,9 +105,11 @@ class UserController extends Controller
         return $response;
     }
 
-        /**
-    *Recuperar contraseña de usuario
-    */
+    /**
+     *Recuperar contraseña de usuario
+     * @param Request $request
+     * @return JsonResponse|string
+     */
     public function resetPass(Request $request){
 
         $response="";
@@ -117,11 +122,11 @@ class UserController extends Controller
 
         if($data){
              //Buscando usuario por email
-            $user = User::where('email', $data->email)->get()->first();
+            $user = DB::table('users')->where('email',$data->email)->get()->first();
             //Si existe el usuario
             if($user) {
 
-                $password= "";
+                //$password= "";
                 //Generar nueva contraseña
                 $password = Str::random(15);
                 //Reseteando contraseña
@@ -132,7 +137,7 @@ class UserController extends Controller
                     //Guardando contraseña
                     $user->save();
                     $response = response()->json(['New password' => $password]);
-                } catch(\Exception $e){
+                } catch(Exception $e){
                     $response=$e->getMessage();
                     }
 
@@ -154,7 +159,7 @@ class UserController extends Controller
     public function show()
     {
 
-        $response = [];
+        //$response = [];
         $key = MyJWT::getKey();
         $headers = getallheaders();
         $decoded = JWT::decode($headers['token'], $key, array('HS256'));
@@ -178,7 +183,7 @@ class UserController extends Controller
 
     //Actualizar perfil de usuario
     public function updateProfile(Request $request){
-        
+
     }
 }
 
@@ -221,7 +226,7 @@ class UserController extends Controller
     //         'username' => 'required|string|max:255',
     //         'email' => 'required|string|email|max:255|unique:users',
     //         'password' => 'required|string|min:6|confirmed',
-            
+
     //     ]);
 
     //     if($validator->fails()){

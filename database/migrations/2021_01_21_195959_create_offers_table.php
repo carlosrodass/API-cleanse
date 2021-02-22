@@ -15,11 +15,12 @@ class CreateOffersTable extends Migration
     {
         Schema::dropIfExists('offers');
         Schema::create('offers', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            // $table->bigIncrements('id');
+            $table->id();
             $table->string('market_name')->nullable(false);
             $table->string('offer_name')->nullable(false);
             $table->integer('points')->nullable(false);
-            $table->increments('stock')->nullable(false);
+            $table->integer('stock')->nullable(false);
             $table->timestamps();
         });
     }
