@@ -34,8 +34,3 @@ class CreateUserContainersTable extends Migration
         Schema::dropIfExists('user__containers');
     }
 }
-  // $table->bigIncrements('id')->nullable(false);
-// $table->unsignedBigInteger('user_id');
-            // $table->foreign('user_id')->references('id')->on('users');
-            // $table->unsignedBigInteger('container_id');
-            // $table->foreign('container_id')->references('id')->on('containers');

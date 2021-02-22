@@ -32,9 +32,3 @@ class CreateOfferUsersTable extends Migration
         Schema::dropIfExists('offer__users');
     }
 }
- // $table->bigIncrements('id')->nullable(false);
-// $table->unsignedBigInteger('offer_id');
-//             $table->foreign('offer_id')->references('id')->on('offers');
-
- // $table->unsignedBigInteger('user_id');
-            // $table->foreign('user_id')->references('id')->on('users');
