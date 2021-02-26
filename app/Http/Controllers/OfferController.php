@@ -3,40 +3,39 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use App\Models\Offer;
 
 use App\Http\Helpers\MyJWT;
 use \Firebase\JWT\JWT;
 
+
+
 class OfferController extends Controller
 {
-
-    public function showOffers()
-    {
+    /**
+     * Showing all offers
+     * @param 
+     * @return JsonResponse|string
+     */
+    public function show()
+    {   
         $response = [];
-        $key = MyJWT::getKey();
-        $headers = getallheaders();
-        $decoded = JWT::decode($headers['token'], $key, array('HS256'));
-
-        if($decoded->id){
-
-            $offers = DB::table('offers')
-            ->get();
-
-            for($i =0 ; $i < count($offers) ; $i++){
-
-                $response[$i] = [
-                'market' => $offers[$i]->market_name,
-                'product' => $offers[$i]->offer_name,
-                'price' => $offers[$i]->points
-                ];
-            }
-        }else{
-            $response = response()->json(['Failure'=>'No estas logueado']);
+        foreach (Offer::all() as $offer) {
+            $response[] = [
+                'Offer'=> $offer->offer_name,
+                'Market'=>$offer->market_name
+            ];      
         }
-        return $response;
+        return response()->json($response);
     }
 
-    public function tradeOffers(Request $request)
+     /**
+     * Buying offers
+     * @param Request $request
+     * @return JsonResponse|string
+     */
+    public function trade(Request $request)
     {
         /*
         *Usuario intenta adquirir oferta
@@ -50,21 +49,23 @@ class OfferController extends Controller
         *Si los tiene se hace una peticion al servidor con el nombre de la oferta
 
         */
-        $response = "";
-        //busqueda oferta
-        $offerRequest = $request->get('offer_name');
+        $validator = Validator::make($request->all(), [
+            'offer_name' => 'required',
+            'market_name' => 'required',
+            'points' => 'required'
+        ]);
 
-        //Comprobacion de si existe la oferta y stock de la oferta
-        $offersDB = DB::table('offers')
-        ->where('offer_name', '=', $offerRequest)
-        ->get(['stock', 'market_name']);
+        if ($validator->fails()) {
+            return response()->json(['error', 'Faltan datos']);
+        } 
 
-        if($offersDB->get('stock') >= 0){
-            $response = "existe";
-        }
-        else{
-            $response = " No existe";
-        }
+        $offers = Offer::where('offer_name', $request->offer_name)
+        ->where('market_name',$request->market_name)
+        ->where('points', '<' ,$request->points)
+        ->get();
+
+        print($offers);
+        
 
 
         //COMPROBACION DE STOCK
@@ -86,7 +87,7 @@ class OfferController extends Controller
          * --->comprobacion en la app [si la respuesta es FAILURE]
          * No se pudo realizar la compra
          */
-        return $response;
+        // return $response;
         //compact('offersDB');
     }
 }

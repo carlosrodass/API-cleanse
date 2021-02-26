@@ -2,97 +2,93 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Helpers\MyJWT;
-use \Firebase\JWT\JWT;
+use App\Models\UserContainer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\Container;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Services\ContainerServices;
 
 class ContainerController extends Controller
 {
 
-    //Mostrando Contenedores segun la calle introducida y devolviendo el numero de la calle y el nombre
-    public function findContainerByName(Request $request)
-    {
-
-        $data = $request->getContent();
-        $data = json_decode($data);
+      /**
+     *Buscando contenedores por nombre de calle
+     * @param
+     * @return JsonResponse|string
+     */
+    public function show(){
 
         $response = [];
-        $key = MyJWT::getKey();
-        $headers = getallheaders();
-        $decoded = JWT::decode($headers['token'], $key, array('HS256'));
-
-        if($decoded->id){
-            if($data){
-
-                $location = DB::table('containers')
-                ->where('street_name', $data->street_name)
-                ->get();
-
-                if($location){
-                    for($i=0; $i< count($location); $i++){
-
-                        $response[$i] = [
-                        'calle' => $location[$i]->street_name,
-                        'Numero' =>$location[$i]->street_number
-                        ];
-                    }
-                }else{
-                    $response = response()->json(['Failure' => 'No hay contenedores en esta calle']);
-                }
-            }else{
-                $response = response()->json(['Failure'=>'No hay datos de busqueda']);
-            }
-        }else{
-            $response = response()->json(['Failure'=>'No estas logueado']);
+        foreach (Container::all() as $containers){
+            $response[] = [
+                'Street'=> $containers->street_name,
+                'Number'=>$containers->street_number
+            ];
         }
-        return $response;
+        return response()->json(['Containers',$response], 200);
     }
 
-    public function tradeTrash(Request $request)
+     /**
+     *Buscando contenedores por nombre de calle
+     * @param $street_name
+     * @return JsonResponse|string
+     */
+    public function findContainerByName($street_name)
     {
-    	$quantity = $request->getContent();
-        $quantity = json_decode($quantity);
-
-        $response = [];
-        $key = MyJWT::getKey();
-        $headers = getallheaders();
-        $decoded = JWT::decode($headers['token'], $key, array('HS256'));
-
-        if($decoded->id){
-
-            if($quantity){
-                //segun la cantidad introducida devuelve un numero de puntos
-
-                ///AQUI HAY UN ERROR/ EL PARAMETRO QUE RECIBO ES UN STRING(QUANTITY) ENTONCES NO SE PUEDE COMPARAR, ARREGLAR!
-
-                if($quantity >= 1 && $quantity <= 10){
-                    // $response = 5;
-                    $response = response()->json(['Success'=> 5]);
-                }
-                if($quantity >= 11 && $quantity <= 20){
-                    $response = response()->json(['Success'=> 10]);
-                }
-                if($quantity >= 21 && $quantity <= 30){
-                    $response = response()->json(['Success'=> 15]);
-                }
-                if($quantity >= 31 && $quantity <= 40){
-                    $response = response()->json(['Success'=> 20]);
-                }
-
-            }else{
-                $response = response()->json(['Failure'=>'No has introducido basura']);
-            }
-        }else{
-            $response = response()->json(['Failure'=>'No estas logueado']);
+        $locations = Container::where('street_name', $street_name)->get();
+        foreach ($locations as $containers){
+            $response[] = [
+                'Street'=> $containers->street_name,
+                'Number'=>$containers->street_number
+            ];
         }
-
-
-    	return $response;
-
+       return response()->json(['Success' => $response]);
     }
 
 
+    /**
+     *Intercambio entre contenedores y usuario, basura por puntos
+     * @param Request $request
+     * @return JsonResponse|string
+     */
+    public function trade(Request $request, $userId, $ContainerId)
+    {
+        $validator = Validator::make($request->all(), [
+            'trash' => 'required|max:2'
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json(['error', 'no es numero']);
+        }
+
+        $points = (new ContainerServices())->getPoints($request);
+
+        $userContainer = UserContainer::create([
+            'user_id' => $userId,
+            'container_id' => $ContainerId,
+            'points'=> $points,
+            'trash_kilograms' => $request->trash
+        ]);
+        return response()->json(['Points', $points]);
+    }
 
 }
+
+
+        // switch ($quantity) {
+        //     case $quantity < 0 && $quantity >= 10 :
+        //         $points = 5;
+        //         $str = (string) $points;
+        //         return response()->json(['Points', $str]);
+        //         break;
+        //     case $quantity < 11 && $quantity > 20:
+        //         $points = 15;
+        //         $str = (string) $points;
+        //         return response()->json(['Points', $str]);
+        //         break;
+        //     case $quantity < 21 && $quantity > 30:
+        //         $points = 20;
+        //         $str = (string) $points;
+        //         return response()->json(['Points', $str]);
+        //         break;
+        // }

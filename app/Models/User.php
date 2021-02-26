@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Contracts\Auth\CanResetPassword;
+
+// Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -24,9 +27,7 @@ class User extends Authenticatable implements JWTSubject
         'username',
         'email',
         'password',
-        'points'
-
-
+        // 'points'
     ];
 
     /**
@@ -48,10 +49,13 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    //Encriptando contraeña
+    public function setPasswordAttribute($password)
+    {   
+        $this->attributes['password'] = bcrypt($password);
+    }
 
     //Relations
-
-
     public function containers(){
         return $this->belongsToMany(Container::class);
     }

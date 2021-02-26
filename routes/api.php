@@ -14,7 +14,7 @@ use App\Http\Controllers\ContainerController;
 // Route::post('register', 'App\Http\Controllers\UserController@register');
 // Route::post('login', 'App\Http\Controllers\UserController@authenticate');
 
-// //Token Verification 
+// //Token Verification
 // Route::group(['middleware' => ['jwt.verify']], function() {
 
 //     //User routes
@@ -32,46 +32,45 @@ use App\Http\Controllers\ContainerController;
 
 
 /*
-*Grupo de rutas de usuarios , Registro/Login/Reset_password/show_profile/update_profile
+*Grupo de rutas de usuarios , Registro/Login/Reset_password/show_profile/update_profile y verificacion del token
 */
-Route::prefix('users')->group(function (){
 
-	Route::post('/register',[UserController::class, 'signUp']);
 
-	Route::post('/login',[UserController::class, 'signIn']);
+Route::post('register',[UserController::class, 'store']);
 
-	Route::put('/reset',[UserController::class, 'resetPass']);
+Route::post('login',[UserController::class, 'signIn']);
+
+Route::put('reset',[UserController::class, 'resetPass']);
+
+Route::group(['prefix' => 'users', 'middleware' => ['jwt.verify']], function (){
 
 	Route::get('/profile',[UserController::class, 'show']);
 
-	Route::post('/update',[UserController::class, 'updateProfile']);
+	Route::put('/update/{id}',[UserController::class, 'update']);
+
+});
+
+/*
+*Grupo de rutas de ofertas , comprar_ofertas/ver_ofertas y middleware
+*/
+Route::group(['prefix' => 'offers', 'middleware' => ['jwt.verify']], function (){
+
+	Route::post('/trade',[OfferController::class, 'trade']);
+
+	Route::get('/all',[OfferController::class, 'show']);
 
 });
 
 
 /*
-*Grupo de rutas de ofertas , comprar_ofertas/ver_ofertas
+*Grupo de rutas de contenedores , ver_contenedores/trade y middleware
 */
-Route::prefix('offers')->group(function (){
+Route::group(['prefix' => 'containers', 'middleware' => ['jwt.verify']], function (){
 
-	Route::post('/buy',[OfferController::class, 'tradeOffers']);
+	Route::post('/trade/{userId}/{containerId}',[ContainerController::class, 'trade']);
 
-	Route::get('/all',[OfferController::class, 'showOffers']);
+	Route::get('/show/{street_name}',[ContainerController::class, 'findContainerByName']);
 
-	// Route::post('/update',[UserController::class, 'updateProfile']);
-
-});
-
-
-/*
-*Grupo de rutas de ofertas , comprar_ofertas/ver_ofertas
-*/
-Route::prefix('containers')->group(function (){
-
-	Route::post('/trade',[ContainerController::class, 'tradeTrash']);
-
-	Route::post('/show',[ContainerController::class, 'findContainerByName']);
-
-	// Route::post('/update',[UserController::class, 'updateProfile']);
+	Route::get('/all',[ContainerController::class, 'show']);
 
 });
