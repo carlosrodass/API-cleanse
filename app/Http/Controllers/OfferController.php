@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\UserOffer;
+use http\Client\Curl\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -15,17 +17,17 @@ class OfferController extends Controller
 {
     /**
      * Showing all offers
-     * @param 
+     * @param
      * @return JsonResponse|string
      */
     public function show()
-    {   
+    {
         $response = [];
         foreach (Offer::all() as $offer) {
             $response[] = [
                 'Offer'=> $offer->offer_name,
                 'Market'=>$offer->market_name
-            ];      
+            ];
         }
         return response()->json($response);
     }
@@ -37,57 +39,65 @@ class OfferController extends Controller
      */
     public function trade(Request $request)
     {
-        /*
-        *Usuario intenta adquirir oferta
-        *Se comprueba que tenga los ptos necesarios
 
-        * 1) --->los tiene
-                    : peticion al servidor
-        * 2) --->No los tiene
-                    : Mensaje de error
-
-        *Si los tiene se hace una peticion al servidor con el nombre de la oferta
-
-        */
+        //Validando que esten los datos
         $validator = Validator::make($request->all(), [
             'offer_name' => 'required',
             'market_name' => 'required',
-            'points' => 'required'
+            'points' => 'required',
+            'id' => 'required'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error', 'Faltan datos']);
-        } 
-
+        }
+        //Validando que exista la oferta
         $offers = Offer::where('offer_name', $request->offer_name)
         ->where('market_name',$request->market_name)
-        ->where('points', '<' ,$request->points)
-        ->get();
+            ->where('points', '<' ,$request->points)
+                ->decrement('stock', 1);
 
-        print($offers);
-        
+        if(!$offers){
+            return response()->json(['error', 'No existe la oferta']);
+        }else{
+           $user = DB::table('users')->where('id', $request->id)->decrement('points', 2);
 
-
-        //COMPROBACION DE STOCK
-
-        // if("stock > 0"){
-        //     //Restar el stock
-        //     //response = succesful
-        // }
-        // else{
-        //     //response = failure
-        // }
-
-        /**
-         * la RESPONSE es enviada al cliente
-         *
-         * --->comprobacion en la app [si la respuesta es SUCCES]
-         * Restar los ptos correspondientes al usuario y mensaje de VENDIDO
-         *
-         * --->comprobacion en la app [si la respuesta es FAILURE]
-         * No se pudo realizar la compra
-         */
-        // return $response;
-        //compact('offersDB');
+           UserOffer::create([
+                'offer_id' => 1, //??
+                'user_id' => $request->id,
+                'points'=> 2,//??
+            ]);
+            return response()->json(['Success', 'Compra realizada']);
+        }
     }
 }
+
+
+
+
+/*
+     *Usuario intenta adquirir oferta
+     *Se comprueba que tenga los ptos necesarios
+
+     * 1) --->los tiene
+                 : peticion al servidor
+     * 2) --->No los tiene
+                 : Mensaje de error
+
+     *Si los tiene se hace una peticion al servidor con el nombre de la oferta /supermercado
+
+     */
+
+
+
+/**
+ * la RESPONSE es enviada al cliente
+ *
+ * --->comprobacion en la app [si la respuesta es SUCCES]
+ * Restar los ptos correspondientes al usuario y mensaje de VENDIDO
+ *
+ * --->comprobacion en la app [si la respuesta es FAILURE]
+ * No se pudo realizar la compra
+ */
+// return $response;
+//compact('offersDB');

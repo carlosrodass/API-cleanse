@@ -6,6 +6,7 @@ use App\Models\UserContainer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Container;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Services\ContainerServices;
 
@@ -65,6 +66,8 @@ class ContainerController extends Controller
         }
 
         $points = (new ContainerServices())->getPoints($request);
+
+        DB::table('users')->where('id', $userId)->increment('points', $points);
 
         $userContainer = UserContainer::create([
             'user_id' => $userId, //Token?
