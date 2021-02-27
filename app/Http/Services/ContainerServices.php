@@ -41,3 +41,25 @@ class ContainerServices
         return $str;
     }
 }
+
+
+
+
+        // switch ($quantity) {
+        //     case $quantity < 0 && $quantity >= 10 :
+        //         $points = 5;
+        //         $str = (string) $points;
+        //         return response()->json(['Points', $str]);
+        //         break;
+        //     case $quantity < 11 && $quantity > 20:
+        //         $points = 15;
+        //         $str = (string) $points;
+        //         return response()->json(['Points', $str]);
+        //         break;
+        //     case $quantity < 21 && $quantity > 30:
+        //         $points = 20;
+        //         $str = (string) $points;
+        //         return response()->json(['Points', $str]);
+        //         break;
+        // }
+

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\UserContainer;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Container;
 use Illuminate\Support\Facades\Validator;
@@ -25,7 +26,7 @@ class ContainerController extends Controller
                 'Number'=>$containers->street_number
             ];
         }
-        return response()->json(['Containers',$response], 200);
+        return response()->json(['Containers',$response]);
     }
 
      /**
@@ -49,6 +50,8 @@ class ContainerController extends Controller
     /**
      *Intercambio entre contenedores y usuario, basura por puntos
      * @param Request $request
+     * @param $userId
+     * @param $ContainerId
      * @return JsonResponse|string
      */
     public function trade(Request $request, $userId, $ContainerId)
@@ -58,13 +61,13 @@ class ContainerController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error', 'no es numero']);
+            return response()->json(['error', 'No has introducido nada']);
         }
 
         $points = (new ContainerServices())->getPoints($request);
 
         $userContainer = UserContainer::create([
-            'user_id' => $userId,
+            'user_id' => $userId, //Token?
             'container_id' => $ContainerId,
             'points'=> $points,
             'trash_kilograms' => $request->trash
@@ -73,22 +76,3 @@ class ContainerController extends Controller
     }
 
 }
-
-
-        // switch ($quantity) {
-        //     case $quantity < 0 && $quantity >= 10 :
-        //         $points = 5;
-        //         $str = (string) $points;
-        //         return response()->json(['Points', $str]);
-        //         break;
-        //     case $quantity < 11 && $quantity > 20:
-        //         $points = 15;
-        //         $str = (string) $points;
-        //         return response()->json(['Points', $str]);
-        //         break;
-        //     case $quantity < 21 && $quantity > 30:
-        //         $points = 20;
-        //         $str = (string) $points;
-        //         return response()->json(['Points', $str]);
-        //         break;
-        // }
