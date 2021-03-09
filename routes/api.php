@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\ContainerController;
+use App\Http\Controllers\UserOfferController;
 
 // //Found container without verification
 // Route::post('container', 'App\Http\Controllers\ContainerController@findContainerByName');
@@ -72,5 +73,11 @@ Route::group(['prefix' => 'containers', 'middleware' => ['jwt.verify']], functio
 	Route::get('/show/{street_name}',[ContainerController::class, 'findContainerByName']);
 
 	Route::get('/all',[ContainerController::class, 'show']);
+
+});
+
+Route::group(['prefix' => 'buyed', 'middleware' => ['jwt.verify']], function (){
+
+	Route::get('/all/{id}',[UserOfferController::class, 'show']);
 
 });
