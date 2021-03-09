@@ -26,7 +26,9 @@ class OfferController extends Controller
         foreach (Offer::all() as $offer) {
             $response[] = [
                 'Offer'=> $offer->offer_name,
-                'Market'=>$offer->market_name
+                'Market'=>$offer->market_name,
+                'Points'=>$offer->points,
+                'Stock'=>$offer->stock
             ];
         }
         return response()->json($response);
@@ -54,12 +56,22 @@ class OfferController extends Controller
         //Validando que exista la oferta
         $offers = Offer::where('offer_name', $request->offer_name)
         ->where('market_name',$request->market_name)
-            ->where('points', '<' ,$request->points)
-                ->decrement('stock', 1);
+        ->where('points', '<' ,$request->points)
+        ->where('stock', '>' , 0 )
+        ->get();
+                // ->decrement('stock', 1);
+
+        // print($offers);
+        // die();
 
         if(!$offers){
             return response()->json(['error', 'No existe la oferta']);
         }else{
+            $offers =  Offer::where('offer_name', $request->offer_name)->decrement('stock', 1);
+            //Eliminar oferta
+            print($offers);
+            die();
+
            $user = DB::table('users')->where('id', $request->id)->decrement('points', 2);
 
            UserOffer::create([
