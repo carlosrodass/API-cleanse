@@ -57,11 +57,12 @@ class ContainerController extends Controller
      * @param $ContainerId
      * @return JsonResponse|string
      */
-    public function trade(Request $request, $userId)
+    public function trade(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'trash' => 'required|max:2',
-            'container_id' => 'required'
+            'container_id' => 'required',
+            'user_id'=>'required'
             
         ]);
 
@@ -71,10 +72,10 @@ class ContainerController extends Controller
 
         $points = (new ContainerServices())->getPoints($request);
 
-        DB::table('users')->where('id', $userId)->increment('points', $points);
+        DB::table('users')->where('id', $request->user_id)->increment('points', $points);
 
         $userContainer = UserContainer::create([
-            'user_id' => $userId, //Token? de donde lo saco?
+            'user_id' =>$request->user_id, //Token? de donde lo saco?
             'container_id' => $request->container_id,
             'points'=> $points,
             'trash_kilograms' => $request->trash

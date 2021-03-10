@@ -68,7 +68,7 @@ Route::group(['prefix' => 'offers', 'middleware' => ['jwt.verify']], function ()
 */
 Route::group(['prefix' => 'containers', 'middleware' => ['jwt.verify']], function (){
 
-	Route::post('/trade/{userId}',[ContainerController::class, 'trade']);
+	Route::post('/trade',[ContainerController::class, 'trade']);
 
 	Route::get('/show/{street_name}',[ContainerController::class, 'findContainerByName']);
 
