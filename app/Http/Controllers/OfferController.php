@@ -69,8 +69,8 @@ class OfferController extends Controller
         }else{
             $offers =  Offer::where('offer_name', $request->offer_name)->decrement('stock', 1);
             //Eliminar oferta
-            print($offers);
-            die();
+            // print($offers);
+            // die();
 
            $user = DB::table('users')->where('id', $request->id)->decrement('points', 2);
 

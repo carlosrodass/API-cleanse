@@ -119,7 +119,7 @@ class UserController extends Controller
                     return response()->json(['token_absent'], $e->getStatusCode());
             }
 
-        return response()->json(['username' => $user->username,'points' =>$user->points ]);
+        return response($user);
     }
 
      /**
@@ -139,7 +139,7 @@ class UserController extends Controller
             ]);
             return Response()->json(['Success', $user]); 
         }
-        return Response()->json(['fail', 'Usuario no encontrado']);
+        return Response("No encontrado");
       
     }
 }
