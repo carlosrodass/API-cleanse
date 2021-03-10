@@ -31,7 +31,7 @@ class OfferController extends Controller
                 'Stock'=>$offer->stock
             ];
         }
-        return response()->json($response);
+        return response($response); // Array de ofertas
     }
 
      /**
@@ -44,10 +44,12 @@ class OfferController extends Controller
 
         //Validando que esten los datos
         $validator = Validator::make($request->all(), [
-            'offer_name' => 'required',
-            'market_name' => 'required',
-            'points' => 'required',
-            'id' => 'required'
+            'offer_name' => 'required', ///Nombre del producto de la oferta
+            'market_name' => 'required', ///Supermercado que tiene la oferta
+            'points' => 'required', /// Ptos que posee el usuario
+            'id' => 'required', ///Id del usuario
+            'offer_id' => 'required' ///Codigo de la oferta
+
         ]);
 
         if ($validator->fails()) {
@@ -59,57 +61,23 @@ class OfferController extends Controller
         ->where('points', '<' ,$request->points)
         ->where('stock', '>' , 0 )
         ->get();
-                // ->decrement('stock', 1);
-
-        // print($offers);
-        // die();
-
+  
         if(!$offers){
             return response()->json(['error', 'No existe la oferta']);
         }else{
-            $offers =  Offer::where('offer_name', $request->offer_name)->decrement('stock', 1);
-            //Eliminar oferta
-            // print($offers);
-            // die();
+            Offer::where('offer_name', $request->offer_name)-> decrement('stock', 1);
 
-           $user = DB::table('users')->where('id', $request->id)->decrement('points', 2);
+            $offer = Offer::find($request->offer_id);
 
-           UserOffer::create([
-                'offer_id' => 1, //??
-                'user_id' => $request->id,
-                'points'=> 2,//??
+            $user = DB::table('users')->where('id', $request->id)->decrement('points', $offer->points);
+
+            UserOffer::create([
+                'offer_id' =>  $request->offer_id,
+                'user_id' => $request->id, //token?
+                'points'=> $offer->points,
             ]);
             return response()->json(['Success', 'Compra realizada']);
         }
     }
 }
 
-
-
-
-/*
-     *Usuario intenta adquirir oferta
-     *Se comprueba que tenga los ptos necesarios
-
-     * 1) --->los tiene
-                 : peticion al servidor
-     * 2) --->No los tiene
-                 : Mensaje de error
-
-     *Si los tiene se hace una peticion al servidor con el nombre de la oferta /supermercado
-
-     */
-
-
-
-/**
- * la RESPONSE es enviada al cliente
- *
- * --->comprobacion en la app [si la respuesta es SUCCES]
- * Restar los ptos correspondientes al usuario y mensaje de VENDIDO
- *
- * --->comprobacion en la app [si la respuesta es FAILURE]
- * No se pudo realizar la compra
- */
-// return $response;
-//compact('offersDB');

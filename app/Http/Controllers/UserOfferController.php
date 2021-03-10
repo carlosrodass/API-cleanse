@@ -25,7 +25,7 @@ class UserOfferController extends Controller
                     'Points'=>$offers->points
                 ];
             }
-            return response()->json(['Offers buyed',$response]);
+            return response($response);
         }
 
         return response()->json(['No offers buyed']);   

@@ -27,7 +27,8 @@ class ContainerController extends Controller
                 'Number'=>$containers->street_number
             ];
         }
-        return response()->json(['Containers',$response]);
+        return response($response); //Array de json con contenedores
+        // ->json(['Containers',$response]);
     }
 
      /**
@@ -44,7 +45,8 @@ class ContainerController extends Controller
                 'Number'=>$containers->street_number
             ];
         }
-       return response()->json(['Success' => $response]);
+       return response($response); // Array de json con contendores
+    //    ->json(['Success' => $response]);
     }
 
 
@@ -55,10 +57,12 @@ class ContainerController extends Controller
      * @param $ContainerId
      * @return JsonResponse|string
      */
-    public function trade(Request $request, $userId, $ContainerId)
+    public function trade(Request $request, $userId)
     {
         $validator = Validator::make($request->all(), [
-            'trash' => 'required|max:2'
+            'trash' => 'required|max:2',
+            'container_id' => 'required'
+            
         ]);
 
         if ($validator->fails()) {
@@ -70,12 +74,12 @@ class ContainerController extends Controller
         DB::table('users')->where('id', $userId)->increment('points', $points);
 
         $userContainer = UserContainer::create([
-            'user_id' => $userId, //Token?
-            'container_id' => $ContainerId,
+            'user_id' => $userId, //Token? de donde lo saco?
+            'container_id' => $request->container_id,
             'points'=> $points,
             'trash_kilograms' => $request->trash
         ]);
-        return response()->json(['Points', $points]);
+        return response( $points);
     }
 
 }

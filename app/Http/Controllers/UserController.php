@@ -137,7 +137,8 @@ class UserController extends Controller
                 $user->email = $request->email,
                 $user->password = $request->password,
             ]);
-            return Response()->json(['Success', $user]); 
+            return Response($user); // Json 
+            // ->json(['Success', $user]); 
         }
         return Response("No encontrado");
       
