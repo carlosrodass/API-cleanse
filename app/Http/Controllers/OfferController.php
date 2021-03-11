@@ -25,6 +25,7 @@ class OfferController extends Controller
         $response = [];
         foreach (Offer::all() as $offer) {
             $response[] = [
+                'id' =>$offer->id,
                 'Offer'=> $offer->offer_name,
                 'Market'=>$offer->market_name,
                 'Points'=>$offer->points,
