@@ -36,9 +36,13 @@ class ContainerController extends Controller
      * @param $street_name
      * @return JsonResponse|string
      */
-    public function findContainerByName($street_name)
+    public function findContainerByName(Request $request)
     {
-        $locations = Container::where('street_name', $street_name)->get();
+        $validator = Validator::make($request->all(), [
+            'street_name' => 'required',
+        ]);
+
+        $locations = Container::where('street_name', $request->street_name)->get();
         foreach ($locations as $containers){
             $response[] = [
                 'Street'=> $containers->street_name,
@@ -62,25 +66,27 @@ class ContainerController extends Controller
         $validator = Validator::make($request->all(), [
             'trash' => 'required|max:2',
             'container_id' => 'required',
-            'user_id'=>'required'
-            
         ]);
 
         if ($validator->fails()) {
             return response()->json(['error', 'No has introducido nada']);
         }
 
+        $auth = auth()->user(); //Cogiendo el usuario autenticado actualmente
+
         $points = (new ContainerServices())->getPoints($request);
 
-        DB::table('users')->where('id', $request->user_id)->increment('points', $points);
+        DB::table('users')->where('id', $auth->id)->increment('points', $points);
+
+        
 
         $userContainer = UserContainer::create([
-            'user_id' =>$request->user_id, //Token? de donde lo saco?
+            'user_id' =>$auth->id,
             'container_id' => $request->container_id,
             'points'=> $points,
             'trash_kilograms' => $request->trash
         ]);
-        return response( $points);
+        return response($points);
     }
 
 }

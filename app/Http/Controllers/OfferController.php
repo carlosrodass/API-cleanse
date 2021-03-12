@@ -48,7 +48,6 @@ class OfferController extends Controller
             'offer_name' => 'required', ///Nombre del producto de la oferta
             'market_name' => 'required', ///Supermercado que tiene la oferta
             'points' => 'required', /// Ptos que posee el usuario
-            'id' => 'required', ///Id del usuario
             'offer_id' => 'required' ///Codigo de la oferta
 
         ]);
@@ -66,15 +65,18 @@ class OfferController extends Controller
         if(!$offers){
             return response()->json(['error', 'No existe la oferta']);
         }else{
+
+            $auth = auth()->user();//Cogiendo el usuario autenticado actualmente
+
             Offer::where('offer_name', $request->offer_name)-> decrement('stock', 1);
 
             $offer = Offer::find($request->offer_id);
 
-            $user = DB::table('users')->where('id', $request->id)->decrement('points', $offer->points);
+            $user = DB::table('users')->where('id', $auth->id)->decrement('points', $offer->points);
 
             UserOffer::create([
                 'offer_id' =>  $request->offer_id,
-                'user_id' => $request->id, //token?
+                'user_id' => $auth->id,
                 'points'=> $offer->points,
             ]);
             return response()->json(['Success', 'Compra realizada']);

@@ -24,6 +24,8 @@ class UserController extends Controller
     public function __construct(User $user)
     {
         $this->user = $user;
+       
+        //$this->middleware('auth:api', ['except' => ['login']]);
     }
 
     /**
@@ -52,9 +54,10 @@ class UserController extends Controller
                 return response()->json(['error' => 'Credenciales incorrectas']);
             }
         } catch (JWTException $e) {
-            return response()->json(['error' => 'Imposible crear el token']);
+            return response()->json(['error' => $e->getMessage()]);
         }
-        return response()->json(['token' => $token]);
+       
+       return response()->json(['token' => $token]);
     }
 
     /**
@@ -120,6 +123,7 @@ class UserController extends Controller
             }
 
         return response($user);
+
     }
 
      /**

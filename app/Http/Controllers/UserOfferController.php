@@ -12,9 +12,11 @@ class UserOfferController extends Controller
     /**
     * Esta mal, arreglar
     */
-    public function show($id){
+    public function show(){
 
-        $offersBuyed = UserOffer::where('user_id','=', $id)->get();
+        $auth = auth()->user(); //Cogiendo el usuario autenticado actualmente
+
+        $offersBuyed = UserOffer::where('user_id','=', $auth->id)->get();
 
         if($offersBuyed){
            
@@ -30,6 +32,12 @@ class UserOfferController extends Controller
 
         return response()->json(['No offers buyed']);   
     }
+
+
+    
 }
+
+
+    
 
 

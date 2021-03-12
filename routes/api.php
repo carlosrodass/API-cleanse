@@ -70,7 +70,7 @@ Route::group(['prefix' => 'containers', 'middleware' => ['jwt.verify']], functio
 
 	Route::post('/trade',[ContainerController::class, 'trade']);
 
-	Route::get('/show/{street_name}',[ContainerController::class, 'findContainerByName']);
+	Route::post('/show',[ContainerController::class, 'findContainerByName']);
 
 	Route::get('/all',[ContainerController::class, 'show']);
 
@@ -78,6 +78,6 @@ Route::group(['prefix' => 'containers', 'middleware' => ['jwt.verify']], functio
 
 Route::group(['prefix' => 'buyed', 'middleware' => ['jwt.verify']], function (){
 
-	Route::get('/all/{id}',[UserOfferController::class, 'show']);
+	Route::get('/show',[UserOfferController::class, 'show']);
 
 });
