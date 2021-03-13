@@ -1,6 +1,16 @@
 <?php
 
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\OfferController;
+use App\Http\Controllers\ContainerController;
+use App\Http\Controllers\UserOfferController;
+
+
+Route::post('register',[UserController::class, 'store']);
 
 //Rutas usuario
 Route::get('/user/{username}/', 'App\Http\Controllers\UserController@findUser');
