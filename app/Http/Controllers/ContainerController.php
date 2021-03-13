@@ -43,14 +43,20 @@ class ContainerController extends Controller
         ]);
 
         $locations = Container::where('street_name', $request->street_name)->get();
-        foreach ($locations as $containers){
-            $response[] = [
-                'Street'=> $containers->street_name,
-                'Number'=>$containers->street_number
-            ];
+        
+        if($locations){
+            $response = [];
+            foreach ($locations as $containers){
+                $response[] = [
+                    'Street'=> $containers->street_name,
+                    'Number'=>$containers->street_number
+                ]; 
+            }
+
+            return response($response); // Array de json con contendores
         }
-       return response($response); // Array de json con contendores
-    //    ->json(['Success' => $response]);
+
+        return response()->json(["Fail" => "Not found"]);
     }
 
 
@@ -86,7 +92,7 @@ class ContainerController extends Controller
             'points'=> $points,
             'trash_kilograms' => $request->trash
         ]);
-        return response($points);
+        return response()->json(["Puntos" => $points]);
     }
 
 }

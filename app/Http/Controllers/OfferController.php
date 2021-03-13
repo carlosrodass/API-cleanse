@@ -11,8 +11,6 @@ use App\Models\Offer;
 use App\Http\Helpers\MyJWT;
 use \Firebase\JWT\JWT;
 
-
-
 class OfferController extends Controller
 {
     /**

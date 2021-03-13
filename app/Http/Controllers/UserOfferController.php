@@ -20,7 +20,7 @@ class UserOfferController extends Controller
 
         if($offersBuyed){
            
-            $response = [];
+            // $response = [];
             foreach ($offersBuyed as $offers){
                 $response[] = [
                     'Market'=> $offers->offer_id,

@@ -47,7 +47,9 @@ Route::group(['prefix' => 'users', 'middleware' => ['jwt.verify']], function (){
 
 	Route::get('/profile',[UserController::class, 'show']);
 
-	Route::put('/update/{id}',[UserController::class, 'update']);
+	Route::put('/update',[UserController::class, 'update']);
+
+	Route::post('/logout',[UserController::class, 'logOut']);
 
 });
 

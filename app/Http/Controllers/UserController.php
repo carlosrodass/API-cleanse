@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 // use \Firebase\JWT\JWT;
 // use App\Http\Helpers\MyJWT;
@@ -131,10 +132,12 @@ class UserController extends Controller
      * @param
      * @return JsonResponse|string
      */
-    public function update(CreateUserRequest $request, $id){
+    public function update(CreateUserRequest $request){
 
         // $user = $this->user->update($request->validated());
-        $user = User::find($id);
+        $auth = auth()->user();
+
+        $user = User::find($auth->id);
         if($user){
             $user->update([
                 $user->username = $request->username,
@@ -146,6 +149,27 @@ class UserController extends Controller
         }
         return Response("No encontrado");
       
+    }
+
+    public function logOut(Request $request){
+
+        // Get JWT Token from the request header key "Authorization"
+        $token = $request->header("Authorization");
+        // Invalidate the token
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+            return response()->json([
+                "status" => "success", 
+                "message"=> "User successfully logged out."
+            ]);
+        } catch (JWTException $e) {
+            // Error invalidating token
+            return response()->json([
+            "status" => "error", 
+            "message" => "Failed to logout, please try again."
+            ], 500);
+        }
+
     }
 }
 
