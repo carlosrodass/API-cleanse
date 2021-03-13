@@ -40,7 +40,6 @@ class OfferController extends Controller
      */
     public function trade(Request $request)
     {
-
         //Validando que esten los datos
         $validator = Validator::make($request->all(), [
             'offer_name' => 'required', ///Nombre del producto de la oferta
@@ -58,7 +57,7 @@ class OfferController extends Controller
         ->where('market_name',$request->market_name)
         ->where('points', '<' ,$request->points)
         ->where('stock', '>' , 0 )
-        ->get();
+        ->first();
   
         if(!$offers){
             return response()->json(['error', 'No existe la oferta']);
@@ -70,14 +69,18 @@ class OfferController extends Controller
 
             $offer = Offer::find($request->offer_id);
 
-            $user = DB::table('users')->where('id', $auth->id)->decrement('points', $offer->points);
+            if(isset($offer) && $offer->market_name == $request->market_name &&  $offer->offer_name == $request->offer_name)
+            {
+                $user = DB::table('users')->where('id', $auth->id)->decrement('points', $offer->points);
 
-            UserOffer::create([
-                'offer_id' =>  $request->offer_id,
-                'user_id' => $auth->id,
-                'points'=> $offer->points,
-            ]);
-            return response()->json(['Success', 'Compra realizada']);
+                UserOffer::create([
+                    'offer_id' =>  $request->offer_id,
+                    'user_id' => $auth->id,
+                    'points'=> $offer->points,
+                ]);
+                return response()->json(['Success', 'Compra realizada']);
+            }
+            return response()->json(['error', 'No existe la oferta']);
         }
     }
 }

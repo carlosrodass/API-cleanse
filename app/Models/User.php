@@ -39,6 +39,8 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'api_token',
         'remember_token',
+        'created_at',
+        'updated_at'
     ];
 
     /**

@@ -55,10 +55,8 @@ class ContainerController extends Controller
 
             return response($response); // Array de json con contendores
         }
-
         return response()->json(["Fail" => "Not found"]);
     }
-
 
     /**
      *Intercambio entre contenedores y usuario, basura por puntos
@@ -83,8 +81,6 @@ class ContainerController extends Controller
         $points = (new ContainerServices())->getPoints($request);
 
         DB::table('users')->where('id', $auth->id)->increment('points', $points);
-
-        
 
         $userContainer = UserContainer::create([
             'user_id' =>$auth->id,

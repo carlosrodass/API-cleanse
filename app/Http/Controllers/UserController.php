@@ -15,8 +15,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
-// use \Firebase\JWT\JWT;
-// use App\Http\Helpers\MyJWT;
+
 
 class UserController extends Controller
 {   
@@ -25,8 +24,6 @@ class UserController extends Controller
     public function __construct(User $user)
     {
         $this->user = $user;
-       
-        //$this->middleware('auth:api', ['except' => ['login']]);
     }
 
     /**
@@ -56,9 +53,8 @@ class UserController extends Controller
             }
         } catch (JWTException $e) {
             return response()->json(['error' => $e->getMessage()]);
-        }
-       
-       return response()->json(['token' => $token]);
+        } 
+        return response()->json(['token' => $token]);
     }
 
     /**
@@ -122,11 +118,9 @@ class UserController extends Controller
             } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
                     return response()->json(['token_absent'], $e->getStatusCode());
             }
-
         return response($user);
 
     }
-
      /**
      * update profile
      * @param
@@ -160,13 +154,13 @@ class UserController extends Controller
             JWTAuth::invalidate(JWTAuth::getToken());
             return response()->json([
                 "status" => "success", 
-                "message"=> "User successfully logged out."
+                "message"=> "User successfully logged out"
             ]);
         } catch (JWTException $e) {
             // Error invalidating token
             return response()->json([
             "status" => "error", 
-            "message" => "Failed to logout, please try again."
+            "message" => "Failed to logout, please try again"
             ], 500);
         }
 
