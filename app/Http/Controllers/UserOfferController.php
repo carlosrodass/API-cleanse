@@ -14,23 +14,24 @@ class UserOfferController extends Controller
     */
     public function show(){
 
-        $auth = auth()->user(); //Cogiendo el usuario autenticado actualmente
+        $auth = auth()->user();
 
         $offersBuyed = UserOffer::where('user_id','=', $auth->id)->get();
 
         if($offersBuyed){
            
-            // $response = [];
+            $response = [];
             foreach ($offersBuyed as $offers){
+                
                 $response[] = [
                     'Market'=> $offers->offer_id,
                     'Points'=>$offers->points
                 ];
             }
-            return response($response);
+            return response($response, 200);
         }
 
-        return response()->json(['No offers buyed']);   
+        return response()->json(['Market' => 'No market' , 'Points' => 'No points'], 200);   
     }
 
 

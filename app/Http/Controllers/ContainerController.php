@@ -14,7 +14,7 @@ class ContainerController extends Controller
 {
 
       /**
-     *Buscando todos los contenedores 
+     *Buscando todos los contenedores
      * @param
      * @return JsonResponse|string
      */
@@ -27,8 +27,7 @@ class ContainerController extends Controller
                 'Number'=>$containers->street_number
             ];
         }
-        return response($response); //Array de json con contenedores
-        // ->json(['Containers',$response]);
+        return response($response, 200); 
     }
 
      /**
@@ -43,19 +42,19 @@ class ContainerController extends Controller
         ]);
 
         $locations = Container::where('street_name', $request->street_name)->get();
-        
+
         if($locations){
             $response = [];
             foreach ($locations as $containers){
                 $response[] = [
                     'Street'=> $containers->street_name,
                     'Number'=>$containers->street_number
-                ]; 
+                ];
             }
 
-            return response($response); // Array de json con contendores
+            return response($response, 200);
         }
-        return response()->json(["Fail" => "Not found"]);
+        return response()->json(["Fail" => "Not found"], 404);
     }
 
     /**
@@ -73,22 +72,22 @@ class ContainerController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error', 'No has introducido nada']);
+            return response()->json(['Error', 'No data'], 204);
         }
 
-        $auth = auth()->user(); //Cogiendo el usuario autenticado actualmente
+        $auth = auth()->user();
 
         $points = (new ContainerServices())->getPoints($request);
 
         DB::table('users')->where('id', $auth->id)->increment('points', $points);
 
-        $userContainer = UserContainer::create([
+        UserContainer::create([
             'user_id' =>$auth->id,
             'container_id' => $request->container_id,
             'points'=> $points,
             'trash_kilograms' => $request->trash
         ]);
-        return response()->json(["Puntos" => $points]);
+        return response()->json(['Points' => $points], 200);
     }
 
 }

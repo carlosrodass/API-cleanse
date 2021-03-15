@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Password;
 
 
 class UserController extends Controller
-{   
+{
     protected $user;
 
     public function __construct(User $user)
@@ -33,9 +33,8 @@ class UserController extends Controller
      */
     public function store(CreateUserRequest $request): JsonResponse
     {
-        // User::create($request->validated());
-        $user = $this->user->create($request->validated());
-        return response()->json(['Success', 'Usuario registrado', 201]);
+        User::create($request->validated());
+        return response()->json(['Success' => 'Registered user'],201);
     }
 
     /**
@@ -49,12 +48,12 @@ class UserController extends Controller
         $credentials = $request->only('email', 'password');
         try {
             if (!$token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'Credenciales incorrectas']);
+                return response()->json(['error' => 'Incorrect credentials'],401);
             }
         } catch (JWTException $e) {
             return response()->json(['error' => $e->getMessage()]);
-        } 
-        return response()->json(['token' => $token]);
+        }
+        return response()->json(['Token' => $token],200);
     }
 
     /**
@@ -70,11 +69,11 @@ class UserController extends Controller
         $status = Password::sendResetLink(
             $request->only('email')
         );
-    
+
         return $status === Password::RESET_LINK_SENT
                     ? back()->with(['status' => __($status)])
                     : back()->withErrors(['email' => __($status)]);
-        
+
         // $request->validate(['email' => 'required|email']);
 
         // if($credentials){
@@ -109,16 +108,16 @@ class UserController extends Controller
     {
          try {
             if (!$user = JWTAuth::parseToken()->authenticate()) {
-                    return response()->json(['No existe el usuario'], 404);
+                    return response()->json(['User not found'], 404);
             }
             } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
-                    return response()->json(['Token expirado'], $e->getStatusCode());
+                    return response()->json(['Expired Token'], $e->getStatusCode());
             } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-                    return response()->json(['Token invalido'], $e->getStatusCode());
+                    return response()->json(['Invalid Token'], $e->getStatusCode());
             } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
-                    return response()->json(['token_absent'], $e->getStatusCode());
+                    return response()->json(['Token not found'], $e->getStatusCode());
             }
-        return response($user);
+        return response($user , 200);
 
     }
      /**
@@ -128,38 +127,22 @@ class UserController extends Controller
      */
     public function update(CreateUserRequest $request){
 
-        // $user = $this->user->update($request->validated());
-        $auth = auth()->user();
+        auth()->user()->update($request->validated());
 
-        $user = User::find($auth->id);
-        if($user){
-            $user->update([
-                $user->username = $request->username,
-                $user->email = $request->email,
-                $user->password = $request->password,
-            ]);
-            return Response($user); // Json 
-            // ->json(['Success', $user]); 
-        }
-        return Response("No encontrado");
-      
+        return Response()->json(['Success'=> 'Profile updated'], 200);
+
     }
 
-    public function logOut(Request $request){
-
-        // Get JWT Token from the request header key "Authorization"
-        $token = $request->header("Authorization");
-        // Invalidate the token
+    public function logOut(){
         try {
             JWTAuth::invalidate(JWTAuth::getToken());
             return response()->json([
-                "status" => "success", 
+                "status" => "success",
                 "message"=> "User successfully logged out"
-            ]);
+            ], 200);
         } catch (JWTException $e) {
-            // Error invalidating token
             return response()->json([
-            "status" => "error", 
+            "status" => "error",
             "message" => "Failed to logout, please try again"
             ], 500);
         }

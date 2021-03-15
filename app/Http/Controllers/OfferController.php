@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 use App\Models\UserOffer;
-use http\Client\Curl\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Offer;
 
-use App\Http\Helpers\MyJWT;
-use \Firebase\JWT\JWT;
 
 class OfferController extends Controller
 {
@@ -30,7 +28,7 @@ class OfferController extends Controller
                 'Stock'=>$offer->stock
             ];
         }
-        return response($response); // Array de ofertas
+        return response($response , 200);
     }
 
      /**
@@ -50,7 +48,7 @@ class OfferController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error', 'Faltan datos']);
+            return response()->json(['Error', 'Missing data'], 204);
         }
         //Validando que exista la oferta
         $offers = Offer::where('offer_name', $request->offer_name)
@@ -58,12 +56,12 @@ class OfferController extends Controller
         ->where('points', '<' ,$request->points)
         ->where('stock', '>' , 0 )
         ->first();
-  
+
         if(!$offers){
-            return response()->json(['error', 'No existe la oferta']);
+            return response()->json(['Error', 'Offer not found'], 404);
         }else{
 
-            $auth = auth()->user();//Cogiendo el usuario autenticado actualmente
+            $auth = auth()->user();
 
             Offer::where('offer_name', $request->offer_name)-> decrement('stock', 1);
 
@@ -71,16 +69,16 @@ class OfferController extends Controller
 
             if(isset($offer) && $offer->market_name == $request->market_name &&  $offer->offer_name == $request->offer_name)
             {
-                $user = DB::table('users')->where('id', $auth->id)->decrement('points', $offer->points);
+                DB::table('users')->where('id', $auth->id)->decrement('points', $offer->points);
 
                 UserOffer::create([
                     'offer_id' =>  $request->offer_id,
                     'user_id' => $auth->id,
                     'points'=> $offer->points,
                 ]);
-                return response()->json(['Success', 'Compra realizada']);
+                return response()->json(['Success', 'Purchased item'], 200);
             }
-            return response()->json(['error', 'No existe la oferta']);
+            return response()->json(['error', 'Offer not found'], 404);
         }
     }
 }
