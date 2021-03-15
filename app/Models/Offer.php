@@ -20,6 +20,6 @@ class Offer extends Model
 
     //Relations
     public function users(){
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'offer_users', 'user_id', 'offer_id')->withPivot('points');
     }
 }
