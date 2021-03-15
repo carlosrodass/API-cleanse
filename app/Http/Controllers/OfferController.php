@@ -54,7 +54,7 @@ class OfferController extends Controller
         $offers = Offer::where('offer_name', $request->offer_name)
         ->where('market_name',$request->market_name)
         ->where('points', '<' ,$request->points)
-        ->where('stock', '>' , 0 )
+        ->where('stock', '>' , 0)
         ->first();
 
         if(!$offers){
