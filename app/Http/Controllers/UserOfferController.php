@@ -10,29 +10,33 @@ class UserOfferController extends Controller
 {
 
     /**
-    * Esta mal, arreglar
+     * Mostrando ofertas compradas y cantidad de puntos de cada compra
+     * @param 
+     * @return JsonResponse
     */
     public function show(){
 
         $auth = auth()->user();
 
-        $offersBuyed = UserOffer::where('user_id','=', $auth->id)->get();
+        $user = User::where('id','=', $auth->id)->first();
 
-        if($offersBuyed){
-           
             $response = [];
-            foreach ($offersBuyed as $offers){
+
+            foreach ($user->offer as $oneOffer){
                 
                 $response[] = [
-                    'Market'=> $offers->offer_id,
-                    'Points'=>$offers->points
+                    'Market'=> $oneOffer->offer_name,
+                    'Points'=>$oneOffer->points
                 ];
             }
             return response($response, 200);
-        }
+  
 
         return response()->json(['Market' => 'No market' , 'Points' => 'No points'], 200);   
     }
+
+
+    
 
 
     

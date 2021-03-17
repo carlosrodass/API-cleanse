@@ -63,8 +63,8 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(Container::class);
     }
 
-    public function offers(){
-        return $this->belongsToMany(Offer::class, 'offer_users', 'offer_id', 'user_id')->withPivot('points');
+    public function offer(){
+        return $this->belongsToMany(Offer::class, 'offer__users')->withPivot( 'offer_id', 'user_id' ,'points');
     }
 
     public function getJWTIdentifier()
