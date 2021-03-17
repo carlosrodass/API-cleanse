@@ -20,16 +20,16 @@ class UserOfferController extends Controller
 
         $user = User::where('id','=', $auth->id)->first();
 
-            $response = [];
+        $response = [];
 
-            foreach ($user->offer as $oneOffer){
+        foreach ($user->offer as $oneOffer){
                 
-                $response[] = [
-                    'Market'=> $oneOffer->offer_name,
-                    'Points'=>$oneOffer->points
-                ];
-            }
-            return response($response, 200);
+            $response[] = [
+                'Market'=> $oneOffer->offer_name,
+                'Points'=>$oneOffer->points
+            ];
+        }
+        return response($response, 200);
   
 
         return response()->json(['Market' => 'No market' , 'Points' => 'No points'], 200);   
