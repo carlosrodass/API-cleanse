@@ -23,8 +23,11 @@ class ContainerController extends Controller
         $response = [];
         foreach (Container::all() as $containers){
             $response[] = [
-                'Street'=> $containers->street_name,
-                'Number'=>$containers->street_number
+                // 'id' => $containers->id,
+                'Street_name'=> $containers->street_name,
+                'Street_number'=>$containers->street_number,
+                'Latitude' =>$containers->latitude,
+                'Longitude' =>$containers->longitude
             ];
         }
         return response($response, 200); 

@@ -19,6 +19,10 @@ class CreateContainersTable extends Migration
             $table->id();
             $table->integer('street_number')->nullable(false);
             $table->string('street_name')->nullable(false);
+            $table->double('latitude')->nullable();
+            $table->double('longitude')->nullable();
+            // $table->decimal('latitude', 10, 8);
+            // $table->decimal('longitude', 11, 8);
             $table->timestamps();
         });
     }
